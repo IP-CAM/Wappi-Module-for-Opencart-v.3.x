@@ -1,25 +1,28 @@
-<?
+<?php
 
 class ControllerExtensionModuleWappiPro extends Controller
 {
+
     public function status_change($route, $data)
     {
         $orderStatusId = $data[1];
-        $orderId = $data[0];
+        $orderId       = $data[0];
 
         $this->load->model('setting/setting');
         $this->load->model('checkout/order');
-        $this->load->model('localisation/order_status');
+        $this->load->model('extension/wappipro/order');
+        $this->load->model('localisation/order_status'); 
 
         $order = $this->model_checkout_order->getOrder($orderId);
         $statusName = $this->model_localisation_order_status->getOrderStatus($orderStatusId)['name'];
-        $isActive = $this->model_setting_setting->getSettingValue("wappipro_active");
-        $isSelfSendingActive = $this->model_setting_setting->getSettingValue("wappipro_self_sending_active");
+        $settings = $this->model_setting_setting->getSetting('wappipro');
+        $isActive = $settings["wappipro_active"];
+        $isSelfSendingActive = $settings["wappipro_admin_". $orderStatusId . "_active"];
         if ($this->isModuleEnabled() && !empty($isActive) && !empty($statusName)) {
 
-            $isAdminSend = $this->model_setting_setting->getSettingValue("wappipro_admin_" . $orderStatusId . "_active");
-            $statusActivate = $this->model_setting_setting->getSettingValue("wappipro_" . $orderStatusId . "_active");
-            $statusMessage = $this->model_setting_setting->getSettingValue("wappipro_" . $orderStatusId . "_message");
+            $isAdminSend = $settings["wappipro_admin_" . $orderStatusId . "_active"];
+            $statusActivate = $settings["wappipro_" . $orderStatusId . "_active"];
+            $statusMessage = $settings["wappipro_" . $orderStatusId . "_message"];
 
             if (!empty($statusActivate) && !empty($statusMessage)) {
                 $replace = [
@@ -28,6 +31,8 @@ class ControllerExtensionModuleWappiPro extends Controller
                     '{order_total}' => round($order['total'] * $order['currency_value'], 2) . ' ' . $order['currency_code'],
                     '{billing_first_name}' => $order['payment_firstname'],
                     '{billing_last_name}' => $order['payment_lastname'],
+                    '{lastname}' => $order['lastname'],
+                    '{firstname}' => $order['firstname'],
                     '{shipping_method}' => $order['shipping_method'],
                 ];
 
@@ -35,11 +40,11 @@ class ControllerExtensionModuleWappiPro extends Controller
                     $statusMessage = str_replace($key, $value, $statusMessage);
                 }
 
-                $apiKey = $this->model_setting_setting->getSettingValue('wappipro_apiKey');
-                $username = $this->model_setting_setting->getSettingValue('wappipro_username');
+                $apiKey = $settings['wappipro_apiKey'];
+                $username = $settings['wappipro_username'];
 
                 if (!empty($apiKey)) {
-                    $platform = $this->model_setting_setting->getSettingValue('wappipro_platform');
+                    $platform = ($this->model_setting_setting->getSetting('wappipro_platform'))['wappipro_platform'];
 
                     $req = [
                         'postfields' => json_encode([
@@ -53,8 +58,8 @@ class ControllerExtensionModuleWappiPro extends Controller
                         ],
                         'url' => 'https://wappi.pro/' . $platform . 'api/sync/message/send?profile_id=' . $username,
                     ];
-                    if (!empty($isSelfSendingActive)) {
-                        $wappipro_self_phone = $this->model_setting_setting->getSettingValue("wappipro_test_phone_number");
+                    if ($isSelfSendingActive === true) {
+                        $wappipro_self_phone = ($this->model_setting_setting->getSetting('wappipro_test'))["wappipro_test_phone_number"];
                         if (!empty($wappipro_self_phone) && !empty($isAdminSend)) {
                             $req_self = [
                                 'postfields' => json_encode([
@@ -85,22 +90,23 @@ class ControllerExtensionModuleWappiPro extends Controller
 
     public function isModuleEnabled()
     {
-        $sql = "SELECT * FROM " . DB_PREFIX . "extension WHERE code = 'wappipro'";
+        $sql    = "SELECT * FROM " . DB_PREFIX . "extension WHERE code = 'wappipro'";
         $result = $this->db->query($sql);
-        return $result->num_rows > 0;
+        return $result->num_rows;
     }
 
-    private function curlito($wait, $req)
+    private function curlito($wait, $req, $method = '')
     {
+
         $curl = curl_init();
-        $option = [
+        $option = array(
             CURLOPT_URL => $req['url'],
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS => $req['postfields'],
             CURLOPT_HTTPHEADER => $req['header'],
-        ];
+        );
 
         if ($wait) {
             $option[CURLOPT_TIMEOUT] = 30;

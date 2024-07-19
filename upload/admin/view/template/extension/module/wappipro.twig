@@ -76,10 +76,6 @@
                         <input type="text" name="wappipro_test_phone_number" value="{{ wappipro_test_phone_number }}" placeholder="{{ btn_test_placeholder }}" class="form-control">
                         <div class="text-muted">{{ btn_test_description }}</div>
                         <input type="submit" name="wappipro_test" value="{{ btn_test_send }}" class="btn btn-primary">
-                        <div class="g">
-                            <label>{{ btn_wappipro_self_sending_active }}</label>
-                            <input type="checkbox" name="wappipro_self_sending_active" value="true" {{ wappipro_self_sending_active == true ? 'checked="checked"' : '' }}>
-                        </div>
                     </div>
                     {% for order_status in order_status_list %}
                         <div class="group">
@@ -91,11 +87,7 @@
                             <div class="text-muted">{{ btn_status_order_description }}</div>
                         </div>
                     {% endfor %}
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" name="wappipro_save_settings" class="btn btn-primary">{{ btn_token_save_all }}</button>
-                        </div>
-                    </div>
+                    <input type="submit" name="wappipro_save_settings" value="{{ btn_token_save_all }}">
                 </form>
             </div>
         </div>
