@@ -16,9 +16,8 @@ class ControllerExtensionModuleWappiPro extends Controller
         $order = $this->model_checkout_order->getOrder($orderId);
         $statusName = $this->model_localisation_order_status->getOrderStatus($orderStatusId)['name'];
         $settings = $this->model_setting_setting->getSetting('wappipro');
-        $isActive = $settings["wappipro_active"];
         $isSelfSendingActive = $settings["wappipro_admin_". $orderStatusId . "_active"];
-        if ($this->isModuleEnabled() && !empty($isActive) && !empty($statusName)) {
+        if ($this->isModuleEnabled() && !empty($statusName)) {
 
             $isAdminSend = $settings["wappipro_admin_" . $orderStatusId . "_active"];
             $statusActivate = $settings["wappipro_" . $orderStatusId . "_active"];

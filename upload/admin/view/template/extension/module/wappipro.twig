@@ -56,12 +56,6 @@
             <div class="panel-body s-w">
                 <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-first-module" class="form-horizontal">
                     <div class="group">
-                        <div class="g">
-                            <label>{{ btn_activate_text }}</label>
-                            <input type="checkbox" name="wappipro_active" value="true" {{ wappipro_active == true ? 'checked="checked"' : '' }}>
-                        </div>
-                    </div>
-                    <div class="group">
                         <label>{{ btn_apiKey_text }}</label>
                         <input type="text" name="wappipro_apiKey" value="{{ wappipro_apiKey }}" placeholder="{{ btn_apiKey_placeholder }}" class="form-control">
                         <div class="text-muted">{{ btn_apiKey_description }}</div>

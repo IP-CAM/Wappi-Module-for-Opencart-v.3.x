@@ -120,6 +120,7 @@ class ModelExtensionWappiProHelper extends Model
             error_log('Ошибка отправки GET-запроса: ' . $data['status'] . PHP_EOL, 3, DIR_LOGS . "wappi-errors.log");
             return false;
         }
+        var_dump($data);
         return $data['platform'];
 	}
 

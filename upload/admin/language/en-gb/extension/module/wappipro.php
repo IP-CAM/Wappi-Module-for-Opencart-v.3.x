@@ -35,4 +35,11 @@ $_['btn_duble_admin'] = 'Duplicate administrator';
 
 $_['btn_status_order_description'] = 'VARIABLES AVAILABLE: {order_number}, {order_date}, {firstname}, {lastname}, {order_total}, {billing_first_name}, {billing_last_name}, {shipping_method}';
 
+$_['err_apikey'] = 'Field apikey is required for testing';
+$_['err_profile'] = 'Profile ID is required for testing';
+$_['err_request'] = 'Site request error';
+$_['err_part1'] = 'Field ';
+$_['err_part2'] = ' is required for testing.';
+
 $_['test_message'] = 'Test message from wappi';
+

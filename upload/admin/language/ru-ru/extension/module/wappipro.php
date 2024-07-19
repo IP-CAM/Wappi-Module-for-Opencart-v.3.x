@@ -35,4 +35,10 @@ $_['btn_duble_admin'] = 'Дублировать администратору';
 
 $_['btn_status_order_description'] = 'Переменные: {order_number}, {order_date}, {order_total}, {firstname}, {lastname}, {billing_first_name}, {billing_last_name}, {shipping_method}';
 
+$_['err_apikey'] = 'Необходим api-ключ для тестирования';
+$_['err_profile'] = 'Необходим ID-профиля для тестирования';
+$_['err_request'] = 'Ошибка запроса сайта';
+$_['err_part1'] = 'Поле ';
+$_['err_part2'] = ' необходимо для тестирования.';
+
 $_['test_message'] = 'Тестовое сообщение от wappi';

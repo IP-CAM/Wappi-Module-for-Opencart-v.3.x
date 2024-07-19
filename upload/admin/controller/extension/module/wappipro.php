@@ -20,7 +20,6 @@ class ControllerExtensionModuleWappiPro extends Controller
     private $fields               = [
         "wappipro_username" => ["label" => "Username", "type" => "isEmpty", "value" => "", "validate" => true],
         "wappipro_apiKey"   => ["label" => "API Key", "type" => "isEmpty", "value" => "", "validate" => true],
-        "wappipro_active" => ["value" => ""],
     ];
 
     public function index()
@@ -108,19 +107,20 @@ class ControllerExtensionModuleWappiPro extends Controller
     public function submitted()
     {
         if (!empty($_POST)) {
+            $this->fields_test['wappipro_test_phone_number']['value'] = $_POST['wappipro_test_phone_number'] ?? '';
+            
             if (!empty($_POST['wappipro_test'])) {
                 $this->validateFields();
                 if (empty($_POST['wappipro_apiKey'])) {
-                    $this->error[] = ["error" => "Field api key is required for testing."];
+                    $this->error[] = ["error" => $this->language->get('err_apikey')];
                 }
 
                 if (empty($_POST['wappipro_username'])) {
-                    $this->error[] = ["error" => "Username is required for testing."];
+                    $this->error[] = ["error" => $this->language->get('err_profile')];
                 }
 
                 if (empty($this->error)) {
-                    $this->saveFiledsToDB();
-                    $fields = $this->getFieldsValue();
+                    $phone = $this->model_setting_setting->getSetting('wappipro_test')['wappipro_test_phone_number'];
 
                     $message = 'Test message from wappi.pro';
 
@@ -129,15 +129,13 @@ class ControllerExtensionModuleWappiPro extends Controller
                     if ($platform !== false) {
                         $platform = ($platform === 'wz')? '': 't';
 
-                        $this->model_setting_setting->editSetting("wappipro_platform", array('wappipro_platform' => $platform));  
-                        $result = $this->model_extension_wappipro_helper->sendTestSMS(
-                            $fields['wappipro_test_phone_number']['value'],
-                            $message
-                        );
+                        $this->model_setting_setting->editSetting("wappipro_platform", array('wappipro_platform' => $platform));
+
+                        $result = $this->model_extension_wappipro_helper->sendTestSMS( $phone, $message );
                         $this->testResult = $result;
                     } else {
                         $this->testResult = false;
-                        $this->error[] = ["error" => "Site request error"];
+                        $this->error[] = ["error" => $this->language->get('err_request')];
                     }
                 }
             } else {
@@ -157,13 +155,14 @@ class ControllerExtensionModuleWappiPro extends Controller
     public function loadFieldsToData(&$data)
     {
         $settings = $this->model_setting_setting->getSetting('wappipro');
+        $settings_test = $this->model_setting_setting->getSetting('wappipro_test');
+
 
         foreach ($this->fields as $key => $value) {
             $data[$key] = $settings[$key] ?? '';
         }
 
         foreach ($this->fields_test as $key => $value) {
-            $settings_test = $this->model_setting_setting->getSetting('wappipro_test');
             $data[$key] = $settings_test[$key] ?? '';
         }
 
@@ -177,68 +176,38 @@ class ControllerExtensionModuleWappiPro extends Controller
 
     public function saveFiledsToDB()
     {
-        $fields = $this->getPostFiles();
 
-        if (!is_array($fields)) {
-            $fields = [];
-        }
-
-        foreach (array_keys($fields) as $key) {
-            $fields[$key] = $_POST[$key] ?? '';
+        foreach (array_keys($this->fields) as $key) {
+            $this->fields[$key] = $_POST[$key] ?? '';
         }
 
         $order_status_list = $this->model_localisation_order_status->getOrderStatuses();
         foreach ($order_status_list as $status) {
-            $fields['wappipro_' . $status['order_status_id'] . '_message'] = $_POST['wappipro_' . $status['order_status_id'] . '_message'] ?? '';
-            $fields['wappipro_' . $status['order_status_id'] . '_active'] = isset($_POST['wappipro_' . $status['order_status_id'] . '_active']) ? 'true' : 'false';
-            $fields['wappipro_admin_' . $status['order_status_id'] . '_active'] = isset($_POST['wappipro_admin_' . $status['order_status_id'] . '_active']) ? 'true' : 'false';
+            $this->fields['wappipro_' . $status['order_status_id'] . '_message'] = $_POST['wappipro_' . $status['order_status_id'] . '_message'] ?? '';
+            $this->fields['wappipro_' . $status['order_status_id'] . '_active'] = isset($_POST['wappipro_' . $status['order_status_id'] . '_active']) ? 'true' : 'false';
+            $this->fields['wappipro_admin_' . $status['order_status_id'] . '_active'] = isset($_POST['wappipro_admin_' . $status['order_status_id'] . '_active']) ? 'true' : 'false';
         }
 
-        $this->model_setting_setting->editSetting($this->getCode(), $fields);   
+        $this->model_setting_setting->editSetting('wappipro', $this->fields);
+        $test_settings = ['wappipro_test_phone_number' => $this->fields_test['wappipro_test_phone_number']['value']];
+        $this->model_setting_setting->editSetting('wappipro_test', $test_settings); 
     }
 
     public function validateFields()
     {
-        $fields = $this->getPostFiles();
 
-        foreach ($fields as $key => $value) {
+        foreach ($this->fields as $key => $value) {
             if (isset($value['validate'])) {
                 $result = call_user_func_array(
                     [$this->model_extension_wappipro_validator, $value['type']],
                     [$_POST[$key]]
                 );
                 if (!$result) {
-                    $this->error[] = ["error" => "Field " . $value['label'] . " is required for testing."];
+                    $this->error[] = ["error" => $this->language->get('err_part1') . $value['label'] . $this->language->get('err_part2')];
                 }
             }
         }
     }
-
-    public function getFieldsValue()
-    {
-        $fields = $this->getPostFiles();
-
-        if (!is_array($fields)) {
-            $fields = [];
-        }
-
-        foreach ($fields as $key => $value) {
-            $fields[$key]["value"] = $this->model_setting_setting->getSettingValue($key);
-        }
-
-        return $fields;
-    }
-
-    public function getPostFiles()
-    {
-        return (!empty($_POST['wappipro_test']) ? $this->fields_test : $this->fields);
-    }
-
-    public function getCode()
-    {
-        return (!empty($_POST['wappipro_test']) ? $this->code[0] : $this->code[1]);
-    }
-
 
     public function install()
     {
