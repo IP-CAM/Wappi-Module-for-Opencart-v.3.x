@@ -17,9 +17,8 @@ $_['step_5'] = 'If you have a problem, use our <a href="https://wappi.pro/integr
 // Buttons
 $_['btn_test_text']        = 'You can test sending to your number, as well as enabling duplicate client alerts to your number';
 $_['btn_test_placeholder'] = '7911000112233';
-$_['btn_test_description'] = 'Enter your number for the test. This number can also be used to duplicate alerts';
+$_['btn_test_description'] = 'Enter your number for the test. This number also be used to duplicate alerts';
 $_['btn_test_send']        = 'Test!';
-$_['btn_wappipro_self_sending_active']        = 'Enable duplicate client alerts to your number (be sure to test the number before using it)';
 
 $_['btn_activate_text'] = 'Enable wappi';
 
@@ -31,22 +30,16 @@ $_['btn_username_text']        = 'Profile ID';
 $_['btn_username_placeholder'] = 'Profile ID';
 $_['btn_username_description'] = 'Get Profile ID: https://wappi.pro/dashboard';
 
-$_['btn_token_save_all'] = 'SAVE';
+$_['btn_token_save_all'] = 'Save';
+$_['btn_duble_admin'] = 'Duplicate administrator';
 
 $_['btn_status_order_description'] = 'VARIABLES AVAILABLE: {order_number}, {order_date}, {firstname}, {lastname}, {order_total}, {billing_first_name}, {billing_last_name}, {shipping_method}';
 
-$_['btn_status_order_canceled']          = "Order - canceled";
-$_['btn_duble_admin']                    = "Duplicate administrator";
-$_['btn_status_order_canceled_reversal'] = "Order - canceled_reversal";
-$_['btn_status_order_chargebackd']       = "Order - chargebackd";
-$_['btn_status_order_complete']          = "Order - complete";
-$_['btn_status_order_denied']            = "Order - denied";
-$_['btn_status_order_expired']           = "Order - expired";
-$_['btn_status_order_failed']            = "Order - failed";
-$_['btn_status_order_pending']           = "Order - pending";
-$_['btn_status_order_processed']         = "Order - processed";
-$_['btn_status_order_processing']        = "Order - processing";
-$_['btn_status_order_refunded']          = "Order - refunded";
-$_['btn_status_order_reversed']          = "Order - reversed";
-$_['btn_status_order_shipped']           = "Order - shipped";
-$_['btn_status_order_voided']            = "Order - voided";
+$_['err_apikey'] = 'Field apikey is required for testing';
+$_['err_profile'] = 'Profile ID is required for testing';
+$_['err_request'] = 'Site request error';
+$_['err_part1'] = 'Field ';
+$_['err_part2'] = ' is required for testing.';
+
+$_['test_message'] = 'Test message from wappi';
+
