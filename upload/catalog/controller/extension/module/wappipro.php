@@ -53,10 +53,6 @@ class ControllerExtensionModuleWappiPro extends Controller
                         ],
                         'url' => 'https://wappi.pro/' . $platform . 'api/sync/message/send?profile_id=' . $username,
                     ];
-                    ob_start();
-                    var_dump($req);
-                    $log_data = ob_get_clean();
-                    error_log($log_data, 3, DIR_LOGS . "check.log");
                     if (!empty($isSelfSendingActive)) {
                         $wappipro_self_phone = $this->model_setting_setting->getSettingValue("wappipro_test_phone_number");
                         if (!empty($wappipro_self_phone) && !empty($isAdminSend)) {
@@ -73,10 +69,6 @@ class ControllerExtensionModuleWappiPro extends Controller
                                 'url' => 'https://wappi.pro/' . $platform . 'api/sync/message/send?profile_id=' . $username,
                             ];
                             $response = json_decode($this->curlito(false, $req_self), true);
-                            ob_start();
-                            var_dump($req_self);
-                            $log_data = ob_get_clean();
-                            error_log($log_data, 3, DIR_LOGS . "check.log");
                         }
                     }
 
