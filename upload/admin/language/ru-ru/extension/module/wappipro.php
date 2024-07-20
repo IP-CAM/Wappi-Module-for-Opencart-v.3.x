@@ -42,3 +42,16 @@ $_['err_part1'] = 'Поле ';
 $_['err_part2'] = ' необходимо для тестирования.';
 
 $_['test_message'] = 'Тестовое сообщение от wappi';
+
+$_['unvalid_profile'] = 'Тест не пройден, проверьте ID ПРОФИЛЯ и ТОКЕН API!';
+
+$_['wappi_subscription_period_expired'] = 'Сообщение не отправлено&nbsp;&nbsp;|&nbsp;&nbsp;Профиль не оплачен. <a href="https://wappi.pro/dashboard" target="_blank">Оплатите на сайте </a>';
+$_['wappi_green_span_and_first_part'] = 'Сообщение успешно отправлено&nbsp;&nbsp;|&nbsp;&nbsp<span>Профиль оплачен до: ';
+$_['wappi_second_part'] = ', Подписка истекает через: ';
+$_['wappi_days'] = ' дней ';
+$_['wappi_day'] = ' день ';
+$_['wappi_day2'] = ' дня ';
+$_['wappi_hours'] = ' часов';
+$_['wappi_hour'] = ' час';
+$_['wappi_hour2'] = ' часа';
+?>

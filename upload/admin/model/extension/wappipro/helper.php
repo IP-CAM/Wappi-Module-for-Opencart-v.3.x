@@ -74,9 +74,14 @@ class ModelExtensionWappiProHelper extends Model
         }
     }
 
-    public function get_platform_info() {
+    public function get_profile_info() {
         $apikey = $this->model_setting_setting->getSettingValue("wappipro_apiKey");
         $username = $this->model_setting_setting->getSettingValue("wappipro_username");
+        
+        if (!$apikey || !$username) {
+            error_log('Missing API key or username' . PHP_EOL, 3, DIR_LOGS . "wappi-errors.log");
+            return ['error' => 'Missing API key or username'];
+        }
     
         $url = 'https://wappi.pro/api/sync/get/status?profile_id=' . urlencode($username);
         $headers = array(
@@ -102,28 +107,77 @@ class ModelExtensionWappiProHelper extends Model
     
         if ($err) {
             error_log('cURL Error: ' . $err . PHP_EOL, 3, DIR_LOGS . "wappi-errors.log");
-            return "cURL Error #:" . $err;
+            return ['error' => "cURL Error #: " . $err];
         }
     
         if ($http_status != 200) {
             error_log('HTTP Status: ' . $http_status . ' - ' . $result . PHP_EOL, 3, DIR_LOGS . "wappi-errors.log");
-            return 'HTTP Status: ' . $http_status;
+            return ['error' => 'HTTP Status: ' . $http_status];
         }
     
         $data = json_decode($result, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
             error_log('Ошибка JSON: ' . json_last_error_msg() . PHP_EOL, 3, DIR_LOGS . "wappi-errors.log");
-            return false;
+            return ['error' => 'JSON Error: ' . json_last_error_msg()];
         }
     
         if (isset($data['status'])) {
             error_log('Ошибка отправки GET-запроса: ' . $data['status'] . PHP_EOL, 3, DIR_LOGS . "wappi-errors.log");
-            return false;
+            return ['error' => 'Ошибка отправки GET-запроса: ' . $data['status']];
         }
-        var_dump($data);
-        return $data['platform'];
-	}
+    
+        $platform = $data['platform'];
+        if (array_key_exists('platform', $data) && $data['platform']) {
+            $platform = ($data['platform'] === 'tg') ? 't' : '';
+        } else {
+            $platform = false;
+        }
 
+        $data["platform"] = $platform;
+        $data['payment_time_string'] = $this->_parse_time($data);
+
+        return $data;
+    }
+
+    private function _parse_time($data) {
+        $result_string = '';
+        $time_sub = new DateTime($data['payment_expired_at']);
+        $time_curr = new DateTime;
+
+        if ($time_sub > $time_curr) {
+            $time_diff = $time_curr->diff($time_sub);
+            $days_diff = $time_diff->days;
+            $hours_diff = $time_diff->h;
+            $result_string .= $this->language->get("wappi_green_span_and_first_part") 
+                            . $time_sub->format('Y-m-d') . $this->language->get("wappi_second_part");
+    
+            $days_diff_last_num = $days_diff % 10;
+            $hours_diff_last_num = $hours_diff % 10;
+    
+            if ($days_diff !== 0) {
+                $result_string .= $days_diff;
+    
+                if ($days_diff_last_num > 4 || ($days_diff > 10 && $days_diff < 21))
+                    $result_string .= $this->language->get("wappi_days");
+                else if ($days_diff_last_num === 1 )
+                    $result_string .= $this->language->get("wappi_day");
+                else
+                    $result_string .= $this->language->get("wappi_day2");
+            }
+            $result_string .= $hours_diff;
+    
+            if ($hours_diff_last_num > 4 || ($hours_diff > 10 && $hours_diff < 20) || $hours_diff_last_num === 0) 
+                $result_string .= $this->language->get("wappi_hours");    
+            else if ($hours_diff_last_num === 1)
+                $result_string .= $this->language->get("wappi_hour");
+            else 
+                $result_string .= $this->language->get("wappi_hour2");  
+        } else {
+            $result_string .= $this->language->get("wappi_subscription_period_expired");
+        }
+        return $result_string;        
+    }
+    
     public function _save_user() {
         $apikey = $this->model_setting_setting->getSettingValue("wappipro_apiKey");
         $username = $this->model_setting_setting->getSettingValue("wappipro_username");
