@@ -165,7 +165,7 @@ class ModelExtensionWappiProHelper extends Model
                     $result_string .= $this->language->get("wappi_day2");
             }
             $result_string .= $hours_diff;
-    
+
             if ($hours_diff_last_num > 4 || ($hours_diff > 10 && $hours_diff < 20) || $hours_diff_last_num === 0) 
                 $result_string .= $this->language->get("wappi_hours");    
             else if ($hours_diff_last_num === 1)
