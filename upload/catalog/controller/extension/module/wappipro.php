@@ -17,9 +17,8 @@ class ControllerExtensionModuleWappiPro extends Controller
         $statusName = $this->model_localisation_order_status->getOrderStatus($orderStatusId)['name'];
         $settings = $this->model_setting_setting->getSetting('wappipro');
         $isSelfSendingActive = $settings["wappipro_admin_". $orderStatusId . "_active"];
-        if ($this->isModuleEnabled() && !empty($statusName)) {
 
-            $isAdminSend = $settings["wappipro_admin_" . $orderStatusId . "_active"];
+        if ($this->isModuleEnabled() && !empty($statusName)) {
             $statusActivate = $settings["wappipro_" . $orderStatusId . "_active"];
             $statusMessage = $settings["wappipro_" . $orderStatusId . "_message"];
 
@@ -57,9 +56,9 @@ class ControllerExtensionModuleWappiPro extends Controller
                         ],
                         'url' => 'https://wappi.pro/' . $platform . 'api/sync/message/send?profile_id=' . $username,
                     ];
-                    if ($isSelfSendingActive == true) {
+                    if ($isSelfSendingActive === 'true') {
                         $wappipro_self_phone = ($this->model_setting_setting->getSetting('wappipro_test'))["wappipro_test_phone_number"];
-                        if (!empty($wappipro_self_phone) && $isAdminSend) {
+                        if (!empty($wappipro_self_phone)) {
                             $req_self = [
                                 'postfields' => json_encode([
                                     'recipient' => $wappipro_self_phone,
