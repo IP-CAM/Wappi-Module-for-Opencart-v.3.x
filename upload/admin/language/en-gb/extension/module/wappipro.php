@@ -43,3 +43,15 @@ $_['err_part2'] = ' is required for testing.';
 
 $_['test_message'] = 'Test message from wappi';
 
+$_['unvalid_profile'] = 'Test failed, check ID PROFILE and TOKEN API!';
+
+$_['wappi_subscription_period_expired'] = 'Message not sent&nbsp;&nbsp;|&nbsp;&nbsp;Profile not paid. <a href="https://wappi.pro/dashboard" target="_blank">Pay on the website </a>';
+$_['wappi_green_span_and_first_part'] = 'Message was successfully sent&nbsp;&nbsp;|&nbsp;&nbspProfile paid before: ';
+$_['wappi_second_part'] = ', Subscription expires through: ';
+$_['wappi_days'] = ' days ';
+$_['wappi_day'] = ' day ';
+$_['wappi_day2'] = ' day ';
+$_['wappi_hours'] = ' hours';
+$_['wappi_hour'] = ' hour';
+$_['wappi_hour2'] = ' hour';
+

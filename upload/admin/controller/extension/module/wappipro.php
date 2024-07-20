@@ -21,6 +21,7 @@ class ControllerExtensionModuleWappiPro extends Controller
         "wappipro_username" => ["label" => "Username", "type" => "isEmpty", "value" => "", "validate" => true],
         "wappipro_apiKey"   => ["label" => "API Key", "type" => "isEmpty", "value" => "", "validate" => true],
     ];
+    
 
     public function index()
     {
@@ -43,8 +44,9 @@ class ControllerExtensionModuleWappiPro extends Controller
         $this->load->model('extension/wappipro/helper');
         $this->load->model('localisation/order_status');
 
-        $this->submitted();
+        $this->submitted($data);
         $this->loadFieldsToData($data);
+
 
         $data['error_warning'] = $this->error;
 
@@ -104,7 +106,7 @@ class ControllerExtensionModuleWappiPro extends Controller
         return $result->num_rows;
     }
 
-    public function submitted()
+    public function submitted(&$data)
     {
         if (!empty($_POST)) {
             $this->fields_test['wappipro_test_phone_number']['value'] = $_POST['wappipro_test_phone_number'] ?? '';
@@ -120,22 +122,28 @@ class ControllerExtensionModuleWappiPro extends Controller
                 }
 
                 if (empty($this->error)) {
+                    $this->saveFiledsToDB();
                     $phone = $this->model_setting_setting->getSetting('wappipro_test')['wappipro_test_phone_number'];
 
-                    $message = 'Test message from wappi.pro';
+                    $message = $this->language->get('test_message');
 
                     $this->model_extension_wappipro_helper->_save_user();
-                    $platform = $this->model_extension_wappipro_helper->get_platform_info();
-                    if ($platform !== false) {
-                        $platform = ($platform === 'wz')? '': 't';
-
-                        $this->model_setting_setting->editSetting("wappipro_platform", array('wappipro_platform' => $platform));
-
-                        $result = $this->model_extension_wappipro_helper->sendTestSMS( $phone, $message );
-                        $this->testResult = $result;
-                    } else {
+                    $data_profile = $this->model_extension_wappipro_helper->get_profile_info();
+                    if (isset($data_profile['error'])) {
                         $this->testResult = false;
-                        $this->error[] = ["error" => $this->language->get('err_request')];
+                        $data["payment_time_string"] = $this->language->get('unvalid_profile');
+                    } else {
+                        $platform = $data_profile['platform'];
+                        if ($platform !== false) {
+                            $data["payment_time_string"] = $data_profile["payment_time_string"];
+                
+                            $this->model_setting_setting->editSetting("wappipro_platform", array('wappipro_platform' => $platform));
+                
+                            $this->testResult = $this->model_extension_wappipro_helper->sendTestSMS($phone, $message);
+                        } else {
+                            $this->testResult = false;
+                            $this->error[] = ["error" => $this->language->get('err_request')];
+                        }
                     }
                 }
             } else {

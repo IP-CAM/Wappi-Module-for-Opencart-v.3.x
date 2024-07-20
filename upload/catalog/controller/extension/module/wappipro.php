@@ -57,9 +57,9 @@ class ControllerExtensionModuleWappiPro extends Controller
                         ],
                         'url' => 'https://wappi.pro/' . $platform . 'api/sync/message/send?profile_id=' . $username,
                     ];
-                    if ($isSelfSendingActive === true) {
+                    if ($isSelfSendingActive == true) {
                         $wappipro_self_phone = ($this->model_setting_setting->getSetting('wappipro_test'))["wappipro_test_phone_number"];
-                        if (!empty($wappipro_self_phone) && !empty($isAdminSend)) {
+                        if (!empty($wappipro_self_phone) && $isAdminSend) {
                             $req_self = [
                                 'postfields' => json_encode([
                                     'recipient' => $wappipro_self_phone,

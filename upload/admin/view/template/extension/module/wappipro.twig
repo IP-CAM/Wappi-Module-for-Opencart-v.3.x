@@ -24,13 +24,22 @@
                 <h4 class="panel-title">{{ about_title }}</h4>
             </div>
             <div class="s-w">
-                {% if wappipro_test_result is same as(false) %}
-                    <div class="alert alert-warning wappipro-alert wappipro-alert-failure alert-dismissible show" role="alert">
-                        Тест не пройден, проверьте ID ПРОФИЛЯ и ТОКЕН API! 
-                        <a href="#" type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </a>
-                    </div>
+                {% if payment_time_string is not none %}
+                    {% if wappipro_test_result is same as(false) %}
+                        <div class="alert alert-warning wappipro-alert wappipro-alert-failure alert-dismissible show" role="alert">
+                            {{ payment_time_string }} 
+                            <a href="#" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success wappipro-alert wappipro-alert-success alert-dismissible show" role="alert" style="background-color: green; color: white;">
+                            {{ payment_time_string }}
+                            <a href="#" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true" style="color: white;">×</span>
+                            </a>
+                        </div>
+                    {% endif %}
                 {% endif %}
                 <div class="s-h">
                     <img src="{{ wappipro_logo }}" style="height: 50px" alt="wappipro">
