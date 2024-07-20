@@ -54,4 +54,3 @@ $_['wappi_day2'] = ' дня ';
 $_['wappi_hours'] = ' часов';
 $_['wappi_hour'] = ' час';
 $_['wappi_hour2'] = ' часа';
-?>

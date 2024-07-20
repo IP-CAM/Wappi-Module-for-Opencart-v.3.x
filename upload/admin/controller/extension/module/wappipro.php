@@ -127,7 +127,6 @@ class ControllerExtensionModuleWappiPro extends Controller
 
                     $message = $this->language->get('test_message');
 
-                    $this->model_extension_wappipro_helper->_save_user();
                     $data_profile = $this->model_extension_wappipro_helper->get_profile_info();
                     if (isset($data_profile['error'])) {
                         $this->testResult = false;
@@ -135,6 +134,7 @@ class ControllerExtensionModuleWappiPro extends Controller
                     } else {
                         $platform = $data_profile['platform'];
                         if ($platform !== false) {
+                            $this->model_extension_wappipro_helper->_save_user();
                             $data["payment_time_string"] = $data_profile["payment_time_string"];
                 
                             $this->model_setting_setting->editSetting("wappipro_platform", array('wappipro_platform' => $platform));
