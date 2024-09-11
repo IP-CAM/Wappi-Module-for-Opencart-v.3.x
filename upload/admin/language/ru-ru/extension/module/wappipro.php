@@ -33,7 +33,7 @@ $_['btn_username_description'] = 'Получить ID профиля: https://wa
 $_['btn_token_save_all'] = 'Сохранить';
 $_['btn_duble_admin'] = 'Дублировать администратору';
 
-$_['btn_status_order_description'] = 'Переменные: {order_number}, {order_date}, {order_total}, {order_comment}, {firstname}, {lastname}, {billing_first_name}, {billing_last_name}, {shipping_method}';
+$_['btn_status_order_description'] = 'Переменные: {order_number}, {order_date}, {order_total}, {order_comment}, {seller_comment}, {firstname}, {lastname}, {billing_first_name}, {billing_last_name}, {shipping_method}';
 
 $_['err_apikey'] = 'Необходим api-ключ для тестирования';
 $_['err_profile'] = 'Необходим ID-профиля для тестирования';

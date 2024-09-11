@@ -28,6 +28,7 @@ class ControllerExtensionModuleWappiPro extends Controller
                     '{order_date}' => $order['date_added'],
                     '{order_total}' => round($order['total'] * $order['currency_value'], 2) . ' ' . $order['currency_code'],
                     '{order_comment}' => $order['comment'],
+                    '{seller_comment}' => $this->getSellerComment($orderId, $orderStatusId),
                     '{billing_first_name}' => $order['payment_firstname'],
                     '{billing_last_name}' => $order['payment_lastname'],
                     '{lastname}' => $order['lastname'],
@@ -127,5 +128,10 @@ class ControllerExtensionModuleWappiPro extends Controller
         } else {
             return $response;
         }
+    }
+
+    private function getSellerComment($orderId, $orderStatusId) {
+        $query = $this->db->query("SELECT comment FROM " . DB_PREFIX . "order_history WHERE order_id = '" . (int)$orderId . "' AND order_status_id = '" . (int)$orderStatusId . "' ORDER BY date_added DESC LIMIT 1");
+        return $query->row ? $query->row['comment'] : '';
     }
 }
