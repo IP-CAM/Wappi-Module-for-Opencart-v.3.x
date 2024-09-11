@@ -27,6 +27,7 @@ class ControllerExtensionModuleWappiPro extends Controller
                     '{order_number}' => $order['order_id'],
                     '{order_date}' => $order['date_added'],
                     '{order_total}' => round($order['total'] * $order['currency_value'], 2) . ' ' . $order['currency_code'],
+                    '{order_comment}' => $order['comment'],
                     '{billing_first_name}' => $order['payment_firstname'],
                     '{billing_last_name}' => $order['payment_lastname'],
                     '{lastname}' => $order['lastname'],

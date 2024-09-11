@@ -33,7 +33,7 @@ $_['btn_username_description'] = 'Get Profile ID: https://wappi.pro/dashboard';
 $_['btn_token_save_all'] = 'Save';
 $_['btn_duble_admin'] = 'Duplicate administrator';
 
-$_['btn_status_order_description'] = 'VARIABLES AVAILABLE: {order_number}, {order_date}, {firstname}, {lastname}, {order_total}, {billing_first_name}, {billing_last_name}, {shipping_method}';
+$_['btn_status_order_description'] = 'VARIABLES AVAILABLE: {order_number}, {order_date}, {order_total}, {order_comment}, {firstname}, {lastname}, {billing_first_name}, {billing_last_name}, {shipping_method}';
 
 $_['err_apikey'] = 'Field apikey is required for testing';
 $_['err_profile'] = 'Profile ID is required for testing';
