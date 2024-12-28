@@ -132,17 +132,19 @@ class ControllerExtensionModuleWappiPro extends Controller
                         $this->testResult = false;
                         $data["payment_time_string"] = $this->language->get('unvalid_profile');
                     } else {
-                        $platform = $data_profile['platform'];
-                        if ($platform !== false) {
-                            $this->model_extension_wappipro_helper->_save_user();
-                            $data["payment_time_string"] = $data_profile["payment_time_string"];
-                
-                            $this->model_setting_setting->editSetting("wappipro_platform", array('wappipro_platform' => $platform));
-                
-                            $this->testResult = $this->model_extension_wappipro_helper->sendTestSMS($phone, $message);
+                        if (isset($data_profile['platform'])) {
+                            $platform = $data_profile['platform'];
+                            if ($platform !== false) {
+                                $this->model_setting_setting->editSetting("wappipro_platform", array('wappipro_platform' => $platform));
+                                $this->model_extension_wappipro_helper->_save_user();
+                                $data["payment_time_string"] = $data_profile["payment_time_string"];
+                                $this->testResult = $this->model_extension_wappipro_helper->sendTestSMS($phone, $message);
+                            } else {
+                                $this->testResult = false;
+                                $this->error[] = ["error" => $this->language->get('err_request')];
+                            }
                         } else {
-                            $this->testResult = false;
-                            $this->error[] = ["error" => $this->language->get('err_request')];
+                            $this->testResult = $this->model_extension_wappipro_helper->sendTestSMS($phone, $message);
                         }
                     }
                 }

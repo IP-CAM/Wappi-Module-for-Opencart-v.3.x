@@ -11,8 +11,10 @@ $_['step_1'] = 'Перейдите на <span><a href="https://wappi.pro/#regist
 $_['step_2'] = "Авторизуйте в сервисе свой whatsapp или telegram номер, с которого будут отсылаться уведомления";
 $_['step_3'] = 'В <a href="https://wappi.pro/dashboard"><strong>личном кабинете</strong></a> посмотрите токен api и id профиля и возвращайтесь к настройкам.';
 $_['step_4'] = 'Заполните поля, включите модуль и сохраните настройки.';
-$_['step_5'] = 'Если возникли проблемы - воспользуйтесь нашей <a href="https://wappi.pro/integrations/opencart"><strong>инструкцией</strong></a>';
-
+$_['step_5'] = 'Вы можете использовать каскадную рассылку Whatsapp/Telegram/SMS.<br>
+						Для этого авторизуйте в Wappi.pro нужные профили, затем добавьте Каскад.<br>
+						ID каскада вставьте на этой странице.';
+$_['step_6'] = 'Если возникли проблемы - воспользуйтесь нашей <a href="https://wappi.pro/integrations/opencart"><strong>инструкцией</strong></a>';
 
 // Buttons
 $_['btn_test_text']        = 'Вы можете протестировать отправку на свой номер, а также включить дублирование клиентских оповещений на свой номер';
@@ -26,20 +28,25 @@ $_['btn_apiKey_text']        = 'Токен API';
 $_['btn_apiKey_placeholder'] = 'Токен API';
 $_['btn_apiKey_description'] = 'Получить Токен API: https://wappi.pro/dashboard';
 
-$_['btn_username_text']        = 'ID профиля';
-$_['btn_username_placeholder'] = 'ID профиля';
-$_['btn_username_description'] = 'Получить ID профиля: https://wappi.pro/dashboard';
+$_['btn_username_text']        = 'ID профиля/каскада';
+$_['btn_username_placeholder'] = 'ID профиля/каскада';
+$_['btn_username_description'] = 'Получить ID профиля или каскада: https://wappi.pro/dashboard';
 
 $_['btn_token_save_all'] = 'Сохранить';
 $_['btn_duble_admin'] = 'Дублировать администратору';
 
 $_['btn_status_order_description'] = 'Переменные: {order_number}, {order_date}, {order_total}, {order_comment}, {seller_comment}, {firstname}, {lastname}, {billing_first_name}, {billing_last_name}, {shipping_method}';
 
+$_['cascade'] = 'Каскад';
+$_['cascade_no_data'] = 'Нет данных для отображения каскада.';
+
 $_['err_apikey'] = 'Необходим api-ключ для тестирования';
 $_['err_profile'] = 'Необходим ID-профиля для тестирования';
 $_['err_request'] = 'Ошибка запроса сайта';
 $_['err_part1'] = 'Поле ';
 $_['err_part2'] = ' необходимо для тестирования.';
+
+$_['sms'] = 'СМС';
 
 $_['test_message'] = 'Тестовое сообщение от wappi';
 

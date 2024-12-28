@@ -14,17 +14,31 @@ class ModelExtensionWappiProHelper extends Model
         if (!empty($apiKey)) {
 
             $req = array();
-            $req['postfields'] = json_encode(array(
-                'recipient' => $to,
-                'body' => $body,
-            ));
+            if ((strlen($username) != 20)) {
+                $req['postfields'] = json_encode(array(
+                    'recipient' => $to,
+                    'body' => $body,
+                ));
 
-            $req['header'] = array(
-                "accept: application/json",
-                "Authorization: " .  $apiKey,
-                "Content-Type: application/json",
-            );
-            $req['url'] = 'https://wappi.pro/'. $platform . 'api/sync/message/send?profile_id=' . $username;
+                $req['header'] = array(
+                    "accept: application/json",
+                    "Authorization: " .  $apiKey,
+                    "Content-Type: application/json",
+                );
+                $req['url'] = 'https://wappi.pro/'. $platform . 'api/sync/message/send?profile_id=' . $username;
+            } else {
+                $req['postfields'] = json_encode(array(
+                    'recipient' => $to,
+                    'body' => $body,
+                    'cascade_id' => $username
+                ));
+                $req['header'] = array(
+                    "accept: application/json",
+                    "Authorization: " .  $apiKey,
+                    "Content-Type: application/json",
+                );
+                $req['url'] = 'https://wappi.pro/csender/cascade/send';
+            }
 
             try {
                 $answer = json_decode($this->curlito(false, $req), true);
@@ -83,7 +97,15 @@ class ModelExtensionWappiProHelper extends Model
             return ['error' => 'Missing API key or username'];
         }
     
-        $url = 'https://wappi.pro/api/sync/get/status?profile_id=' . urlencode($username);
+        $username_len = strlen($username);
+        
+        if ($username_len != 20) {
+            $url = 'https://wappi.pro/api/sync/get/status?profile_id=';
+        } else {
+            $url = 'https://wappi.pro/csender/cascade/get?cascade_id=';
+        }
+        $url .= urlencode($username);
+        
         $headers = array(
             "accept: application/json",
             "Authorization: " . $apikey,
@@ -120,22 +142,24 @@ class ModelExtensionWappiProHelper extends Model
             error_log('Ошибка JSON: ' . json_last_error_msg() . PHP_EOL, 3, DIR_LOGS . "wappi-errors.log");
             return ['error' => 'JSON Error: ' . json_last_error_msg()];
         }
-    
-        if (isset($data['status'])) {
-            error_log('Ошибка отправки GET-запроса: ' . $data['status'] . PHP_EOL, 3, DIR_LOGS . "wappi-errors.log");
-            return ['error' => 'Ошибка отправки GET-запроса: ' . $data['status']];
-        }
-    
-        $platform = $data['platform'];
-        if (array_key_exists('platform', $data) && $data['platform']) {
-            $platform = ($data['platform'] === 'tg') ? 't' : '';
+
+        if ($username_len != 20) {
+            if (isset($data['status'])) {
+                error_log('Ошибка отправки GET-запроса: ' . $data['status'] . PHP_EOL, 3, DIR_LOGS . "wappi-errors.log");
+                return ['error' => 'Ошибка отправки GET-запроса: ' . $data['status']];
+            }
+        
+            $platform = $data['platform'];
+            if (array_key_exists('platform', $data) && $data['platform']) {
+                $platform = ($data['platform'] === 'tg') ? 't' : '';
+            } else {
+                $platform = false;
+            }
+            $data["platform"] = $platform;
+            $data['payment_time_string'] = $this->_parse_time($data);
         } else {
-            $platform = false;
+            $data['payment_time_string'] = $this->_output_cascade($data);
         }
-
-        $data["platform"] = $platform;
-        $data['payment_time_string'] = $this->_parse_time($data);
-
         return $data;
     }
 
@@ -176,6 +200,44 @@ class ModelExtensionWappiProHelper extends Model
             $result_string .= $this->language->get("wappi_subscription_period_expired");
         }
         return $result_string;        
+    }
+
+    private function _output_cascade($data) {
+		if (isset($data['cascade']) && isset($data['cascade']['order'])) {
+			$cascade = $data['cascade'];
+			$cascade_name = $cascade['name'] ?? '';
+			$order = $cascade['order'];
+		
+			$platforms = array_map(function ($item) {
+				$platform = $item['platform'] ?? '';
+				$profile_uuid = $item['profile_uuid'] ?? '';
+		
+				$platform_display = '';
+
+                switch ($platform) {
+                    case 'wz':
+                        $platform_display = 'WhatsApp';
+                        break;
+                    case 'tg':
+                        $platform_display = 'Telegram';
+                        break;
+                    case 'sms':
+                        $platform_display = $this->language->get('sms');
+                        break;
+                    default:
+                        $platform_display = $platform;
+                        break;
+                }
+
+				return "{$platform_display} {$profile_uuid}";
+			}, $order);
+		
+			$platforms_list = implode(', ', $platforms);
+		
+			return $this->language->get('cascade') . " \"{$cascade_name}\": {$platforms_list}";
+		} else {
+			return $this->language->get('cascade_no_data');
+		}
     }
     
     public function _save_user() {

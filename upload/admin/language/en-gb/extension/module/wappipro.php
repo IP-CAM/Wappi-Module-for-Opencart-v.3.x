@@ -11,7 +11,10 @@ $_['step_1'] = 'Go to <span><a href="https://wappi.pro/#registration-popup" targ
 $_['step_2'] = "Authorize your whatsapp or telegram service to send notifications";
 $_['step_3'] = 'In your <a href="https://wappi.pro/dashboard"><strong>personal dashboard</strong></a> look API Token and Profile ID and go back to the settings.';
 $_['step_4'] = 'Fill in the fields, enable the module and save the settings.';
-$_['step_5'] = 'If you have a problem, use our <a href="https://wappi.pro/integrations/opencart"><strong>instructions</strong></a>';
+$_['step_5'] = 'You can use the cascade Whatsapp/Telegram/SMS.<br>
+						To do this, please authorize the profiles in Wappi.pro and then add a cascade.<br>
+						Cascade ID insert on this page';
+$_['step_6'] = 'If you have a problem, use our <a href="https://wappi.pro/integrations/opencart"><strong>instructions</strong></a>';
 
 
 // Buttons
@@ -26,20 +29,25 @@ $_['btn_apiKey_text']        = 'API Token';
 $_['btn_apiKey_placeholder'] = 'API Token';
 $_['btn_apiKey_description'] = 'Get API Token: https://wappi.pro/dashboard';
 
-$_['btn_username_text']        = 'Profile ID';
-$_['btn_username_placeholder'] = 'Profile ID';
-$_['btn_username_description'] = 'Get Profile ID: https://wappi.pro/dashboard';
+$_['btn_username_text']        = 'Profile/Cascade ID';
+$_['btn_username_placeholder'] = 'Profile/Cascade ID';
+$_['btn_username_description'] = 'Get Profile or Cascade ID: https://wappi.pro/dashboard';
 
 $_['btn_token_save_all'] = 'Save';
 $_['btn_duble_admin'] = 'Duplicate administrator';
 
 $_['btn_status_order_description'] = 'VARIABLES AVAILABLE: {order_number}, {order_date}, {order_total}, {order_comment}, {seller_comment}, {firstname}, {lastname}, {billing_first_name}, {billing_last_name}, {shipping_method}';
 
+$_['cascade'] = "Cascade";
+$_['cascade_no_data'] = 'No data for cascade display.';
+
 $_['err_apikey'] = 'Field apikey is required for testing';
 $_['err_profile'] = 'Profile ID is required for testing';
 $_['err_request'] = 'Site request error';
 $_['err_part1'] = 'Field ';
 $_['err_part2'] = ' is required for testing.';
+
+$_['sms'] = 'SMS';
 
 $_['test_message'] = 'Test message from wappi';
 
