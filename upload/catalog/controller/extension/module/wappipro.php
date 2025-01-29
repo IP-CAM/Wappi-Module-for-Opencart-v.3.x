@@ -24,23 +24,22 @@ class ControllerExtensionModuleWappiPro extends Controller
             $statusMessage = $settings["wappipro_" . $orderStatusId . "_message"];
 
             if (!empty($statusActivate) && !empty($statusMessage)) {
-                $replace = [
-                    '{order_number}' => $order['order_id'],
-                    '{order_date}' => $order['date_added'],
-                    '{order_total}' => round($order['total'] * $order['currency_value'], 2) . ' ' . $order['currency_code'],
-                    '{order_comment}' => $order['comment'],
-                    '{seller_comment}' => $sellerComment,
-                    '{billing_first_name}' => $order['payment_firstname'],
-                    '{billing_last_name}' => $order['payment_lastname'],
-                    '{lastname}' => $order['lastname'],
-                    '{firstname}' => $order['firstname'],
-                    '{shipping_method}' => $order['shipping_method'],
-                ];
-
-                foreach ($replace as $key => $value) {
-                    $statusMessage = str_replace($key, $value, $statusMessage);
+                $this->load->library('wappiproreplacements');
+                $wappiPro = $this->registry->get('wappiproreplacements');
+                $replacements = $wappiPro->getReplacements();
+                if (empty($replacements)) {
+                    $wappiPro->loadReplacements($orderId);
+                    $replacements = $wappiPro->getReplacements();
                 }
-
+                if (!empty($replacements)) {
+                    $flatOrder = $this->flattenArray($order);
+                    foreach ($flatOrder as $key => $value) {
+                        $placeholder = $key;
+                        if (isset($replacements[$placeholder])) {
+                            $statusMessage = str_replace('{' . $placeholder . '}', $value, $statusMessage);
+                        }
+                    }
+                }
                 $apiKey = $settings['wappipro_apiKey'];
                 $username = $settings['wappipro_username'];
 
@@ -122,6 +121,21 @@ class ControllerExtensionModuleWappiPro extends Controller
                 }
             }
         }
+    }
+
+    function flattenArray($array, $prefix = '') {
+        $flattened = [];
+    
+        foreach ($array as $key => $value) {
+            $fullKey = $prefix . $key;
+            if (is_array($value)) {
+                $flattened = array_merge($flattened, $this->flattenArray($value, $fullKey . '_'));
+            } else {
+                $flattened[$fullKey] = $value;
+            }
+        }
+    
+        return $flattened;
     }
 
     public function isModuleEnabled()
